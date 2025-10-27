@@ -14,17 +14,20 @@ pipeline {
     }
 
     stage('Setup Java 17') {
-      steps {
-        sh '''
-          apt-get update -y
-          apt-get install -y openjdk-17-jdk
-          update-alternatives --set java /usr/lib/jvm/java-17-openjdk-amd64/bin/java
-          export JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
-          export PATH=$JAVA_HOME/bin:$PATH
-          java -version
-        '''
-      }
-    }
+  steps {
+    sh '''
+      df -h
+      apt-get clean
+      rm -rf /var/lib/apt/lists/*
+      rm -rf /usr/share/doc/*
+      apt-get update -y
+      apt-get install -y openjdk-17-jdk || apt-get install -f -y
+      df -h
+      java -version
+    '''
+     }
+   }
+
 
     stage('Build and Test') {
       steps {
